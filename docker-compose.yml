@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+      - "8443:443" # Expose HTTPS port
+    volumes:
+      - ./html:/var/www/html
+      - ./php-config/php.ini:/usr/local/etc/php/php.ini
+      - ./apache-config/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      - ./ssl/server.crt:/etc/ssl/certs/server.crt # Mount SSL certificate
+      - ./ssl/server.key:/etc/ssl/private/server.key # Mount SSL key
+    depends_on:
+      - db
+      - mailhog
+    environment:
+      XDEBUG_MODE: develop,debug
+      XDEBUG_CONFIG: client_host=host.docker.internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mariadb:10.9
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dev_db
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: devpass
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+  node:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./html:/app
+    ports:
+      - "3000:3000"
+    command: "npm install && npm start"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    logging:
+      driver: "none"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  db_data:
