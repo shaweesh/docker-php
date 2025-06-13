@@ -22,7 +22,6 @@ RUN apt update && apt install -y \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-
 # Set recommended PHP.ini settings
 RUN { \
     echo 'opcache.memory_consumption=128'; \
@@ -44,14 +43,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Generate self-signed SSL certificate
+# NOTE: Disabled because mkcert is used externally and certs are mounted via docker-compose
 # RUN mkdir -p /etc/ssl/certs /etc/ssl/private && \
 #     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 #     -keyout /etc/ssl/private/server.key \
 #     -out /etc/ssl/certs/server.crt \
 #     -subj "/C=US/ST=Dev/L=Localhost/O=Dev/OU=Local/CN=localhost"
 
-#enable ssl
-#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/server.key -out ssl/server.crt -subj "/C=US/ST=Dev/L=Localhost/O=Dev/OU=Local/CN=localhost"
+# enable ssl
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/server.key -out ssl/server.crt -subj "/C=US/ST=Dev/L=Localhost/O=Dev/OU=Local/CN=localhost"
 
 EXPOSE 80 443
-

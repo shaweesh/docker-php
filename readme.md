@@ -1,17 +1,17 @@
 # PHP Development Environment with Docker
 
-A comprehensive Docker development environment for PHP applications with multiple services including Apache, MariaDB, PostgreSQL, Redis, Node.js frontend tooling, and modern development utilities.
+A comprehensive Docker-based development environment for PHP applications, including Apache, SSL, databases, frontend tools, and modern utilities — fully containerized.
 
 ---
 
 ## 🚀 Features
 
-- PHP 8.2 with Apache and SSL
+- PHP 8.2 with Apache + SSL
 - Python backend support (Flask or FastAPI)
 - MariaDB and PostgreSQL databases
 - Redis for caching and queues
-- Xdebug for debugging
-- Node.js environment with support for:
+- Xdebug for PHP debugging
+- Node.js frontend with support for:
   - Vue 3 + Vite
   - React + Vite
   - Vanilla JS + Vite
@@ -20,7 +20,7 @@ A comprehensive Docker development environment for PHP applications with multipl
   - Adminer (All DBs)
   - PgAdmin (PostgreSQL)
   - File Browser
-  - MailHog (email testing)
+  - MailHog (Email testing)
 
 ---
 
@@ -28,6 +28,7 @@ A comprehensive Docker development environment for PHP applications with multipl
 
 - Docker
 - Docker Compose
+- [mkcert](https://github.com/FiloSottile/mkcert) (for trusted local SSL)
 
 ---
 
@@ -37,17 +38,17 @@ A comprehensive Docker development environment for PHP applications with multipl
 
 .
 ├── apache-config/       # Apache configuration (vhost.conf)
-├── html/                # Web root directory for PHP
+├── html/                # Web root for PHP
 ├── nodejs/
 │   ├── vue/             # Vue 3 + Vite frontend
 │   ├── react/           # React + Vite frontend
-│   ├── vanilla/         # Vite + plain JS frontend
-│   └── active/          # Currently active frontend (mounted in container)
+│   ├── vanilla/         # Vanilla JS + Vite
+│   └── active/          # Active frontend mounted to container
 ├── php-config/          # PHP configuration (php.ini)
 ├── python/              # Python backend (Flask or FastAPI)
-│   ├── app.py           # Python entry point
-│   └── requirements.txt # Python dependencies
-├── ssl/                 # SSL certificates (server.crt, server.key)
+│   ├── app.py
+│   └── requirements.txt
+├── ssl/                 # SSL certificates (generated with mkcert)
 ├── docker-compose.yml
 ├── Dockerfile
 └── README.md
@@ -61,45 +62,46 @@ A comprehensive Docker development environment for PHP applications with multipl
 | Service        | Description                            | Port(s)        |
 |----------------|----------------------------------------|----------------|
 | **Web Server** | Apache + PHP 8.2 with SSL              | 80, 443        |
-| **MariaDB**    | MySQL-compatible DB                    | -              |
-| **PostgreSQL** | SQL DB for advanced use cases          | 5432 (internal)|
-| **Redis**      | In-memory cache & queue store          | 6379 (internal)|
-| **Node.js**    | Frontend development server (Vite)     | 3000 (HTTPS)   |
-| **Python (Flask)** | Python backend API                 | 5000 (HTTPS)   |
+| **MariaDB**    | MySQL-compatible DB                    | Internal only  |
+| **PostgreSQL** | SQL DB for advanced use cases          | Internal only  |
+| **Redis**      | In-memory cache & queue store          | 6379           |
+| **Node.js**    | Frontend dev server (Vite)             | 3000 (HTTPS)   |
+| **Python**     | Backend API server                     | 5000 (HTTPS)   |
 | **PHPMyAdmin** | MySQL DB manager                       | 8081           |
-| **Adminer**    | Lightweight DB manager (MySQL, PGSQL)  | 8083           |
+| **Adminer**    | Universal DB manager                   | 8083           |
 | **PgAdmin**    | PostgreSQL manager                     | 8084           |
-| **File Browser** | Web-based file manager              | 8082           |
+| **File Browser** | Web file manager                    | 8082           |
 | **MailHog**    | Email testing tool                     | 1025, 8025     |
 
 ---
 
 ## ⚙️ Getting Started
 
-1. Clone the repository:
-   ```bash
-   git clone http://github.com/shaweesh/docker-php
-   cd docker-php
+### 1. Clone the project
+```bash
+git clone https://github.com/shaweesh/docker-php
+cd docker-php
 ````
 
-2. Generate local SSL certificates (if not already present):
+### 2. Generate trusted local SSL certificates
 
-   ```bash
-   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-     -keyout ssl/server.key -out ssl/server.crt
-   ```
+```bash
+mkcert -key-file ssl/server.key -cert-file ssl/server.crt localhost 127.0.0.1 ::1
+```
 
-3. Select the frontend stack:
+> 💡 Requires [mkcert](https://github.com/FiloSottile/mkcert)
 
-   ```bash
-   cp -r nodejs/vue/* nodejs/active/       # or react/ or vanilla/
-   ```
+### 3. Select your frontend stack
 
-4. Start the services:
+```bash
+cp -r nodejs/vue/* nodejs/active/       # or react/, vanilla/
+```
 
-   ```bash
-   docker-compose up -d --build
-   ```
+### 4. Start services
+
+```bash
+make up
+```
 
 ---
 
@@ -126,10 +128,9 @@ A comprehensive Docker development environment for PHP applications with multipl
 
 ### Xdebug
 
-Pre-configured and enabled. Use with your IDE:
-
+* Mode: `debug,develop`
 * Host: `host.docker.internal`
-* Port: `9003`
+* Port: `9003` (default for Xdebug 3)
 
 ### File Browser
 
@@ -147,47 +148,45 @@ Pre-configured and enabled. Use with your IDE:
 
 ```bash
 # Start all services
-docker-compose up -d
+make up
 
 # Stop all services
-docker-compose down
+make down
 
 # View logs
-docker-compose logs -f
+make logs
 
-# Rebuild services
-docker-compose up -d --build
+# Rebuild everything
+make rebuild
 
-# Access web container
-docker-compose exec web bash
+# Access web container (Apache + PHP)
+make shell
 
 # Access Node container
-docker-compose exec node sh
+make node-shell
+
+# Access Python container
+make python-shell
 ```
 
 ---
 
-## 🌐 Switching Frontend Stack (Vue / React / Vanilla)
-
-To activate a different frontend stack, just replace the contents of `nodejs/active/`:
+## 🌐 Switch Frontend Stack (Vue / React / Vanilla)
 
 ```bash
-# Vue
+# Switch to Vue
 cp -r nodejs/vue/* nodejs/active/
 
-# React
+# Switch to React
 cp -r nodejs/react/* nodejs/active/
 
-# Vanilla JS
+# Switch to Vanilla JS
 cp -r nodejs/vanilla/* nodejs/active/
-```
 
-Then rebuild the node service:
-
-```bash
-docker-compose up -d --build node
+# Rebuild Node container
+make rebuild
 ```
 
 ---
 
-## 🎯 Enjoy a full-stack PHP + JS development experience!
+## 🎯 Enjoy Full-Stack PHP, Python & JavaScript Development — Simplified with Docker!
