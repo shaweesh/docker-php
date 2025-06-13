@@ -7,6 +7,7 @@ A comprehensive Docker development environment for PHP applications with multipl
 ## 🚀 Features
 
 - PHP 8.2 with Apache and SSL
+- Python backend support (Flask or FastAPI)
 - MariaDB and PostgreSQL databases
 - Redis for caching and queues
 - Xdebug for debugging
@@ -43,6 +44,9 @@ A comprehensive Docker development environment for PHP applications with multipl
 │   ├── vanilla/         # Vite + plain JS frontend
 │   └── active/          # Currently active frontend (mounted in container)
 ├── php-config/          # PHP configuration (php.ini)
+├── python/              # Python backend (Flask or FastAPI)
+│   ├── app.py           # Python entry point
+│   └── requirements.txt # Python dependencies
 ├── ssl/                 # SSL certificates (server.crt, server.key)
 ├── docker-compose.yml
 ├── Dockerfile
@@ -60,7 +64,8 @@ A comprehensive Docker development environment for PHP applications with multipl
 | **MariaDB**    | MySQL-compatible DB                    | -              |
 | **PostgreSQL** | SQL DB for advanced use cases          | 5432 (internal)|
 | **Redis**      | In-memory cache & queue store          | 6379 (internal)|
-| **Node.js**    | Frontend development server (Vite)     | 3000           |
+| **Node.js**    | Frontend development server (Vite)     | 3000 (HTTPS)   |
+| **Python (Flask)** | Python backend API                 | 5000 (HTTPS)   |
 | **PHPMyAdmin** | MySQL DB manager                       | 8081           |
 | **Adminer**    | Lightweight DB manager (MySQL, PGSQL)  | 8083           |
 | **PgAdmin**    | PostgreSQL manager                     | 8084           |

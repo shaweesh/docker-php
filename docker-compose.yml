@@ -104,6 +104,18 @@ services:
     volumes:
       - redis_data:/data
 
+  python:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ./python:/app
+      - ./ssl:/certs:ro
+    command: sh -c "pip install -r requirements.txt && python app.py"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
 volumes:
   db_data:
   pg_data:
