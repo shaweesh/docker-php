@@ -30,6 +30,18 @@ clean:
 	docker-compose down -v --remove-orphans
 	docker system prune -f
 
+node-restart:
+	docker-compose restart node
+
+node-rebuild:
+	docker-compose up -d --build node
+
+python-restart:
+	docker-compose restart python
+
+python-rebuild:
+	docker-compose up -d --build python
+
 # 🐚 Shell Access
 shell:
 	docker-compose exec web sh
