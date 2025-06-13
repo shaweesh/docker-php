@@ -15,6 +15,8 @@ RUN apt update && apt install -y \
     gd pdo mysqli pdo_mysql zip xml intl \
   && pecl install xdebug \
   && docker-php-ext-enable xdebug \
+  && pecl install redis \
+  && docker-php-ext-enable redis \
   && a2enmod ssl
 
 # Install Composer

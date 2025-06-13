@@ -6,20 +6,21 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
-      - "8443:443" # Expose HTTPS port
+      - "80:80"
+      - "443:443"
     volumes:
       - ./html:/var/www/html
       - ./php-config/php.ini:/usr/local/etc/php/php.ini
       - ./apache-config/vhost.conf:/etc/apache2/sites-available/000-default.conf
-      - ./ssl/server.crt:/etc/ssl/certs/server.crt # Mount SSL certificate
-      - ./ssl/server.key:/etc/ssl/private/server.key # Mount SSL key
-    depends_on:
-      - db
-      - mailhog
+      - ./ssl/server.crt:/etc/ssl/certs/server.crt
+      - ./ssl/server.key:/etc/ssl/private/server.key
     environment:
       XDEBUG_MODE: develop,debug
       XDEBUG_CONFIG: client_host=host.docker.internal
+    depends_on:
+      - db
+      - postgres
+      - mailhog
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 1m
@@ -35,39 +36,75 @@ services:
       MYSQL_PASSWORD: devpass
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: dev_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - pg_data:/var/lib/postgresql/data
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
     environment:
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: root
-    ports:
-      - "8081:80"
-    depends_on:
-      - db
 
+  adminer:
+    image: adminer
+    ports:
+      - "8083:8080"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8084:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+  filebrowser:
+    image: filebrowser/filebrowser
+    ports:
+      - "8082:80"
+    volumes:
+      - ./html:/srv
+    environment:
+      - FB_AUTH_METHOD=basic
+      - FB_USERNAME=admin
+      - FB_PASSWORD=admin
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+      
   node:
     image: node:18-alpine
     working_dir: /app
     volumes:
-      - ./html:/app
+      - ./nodejs/active:/app
+      - ./ssl:/certs:ro
     ports:
       - "3000:3000"
-    command: "npm install && npm start"
+    command: sh -c "npm install && npx vite"
+    tty: true
+    stdin_open: true
 
-  mailhog:
-    image: mailhog/mailhog:latest
-    logging:
-      driver: "none"
+  redis:
+    image: redis:alpine
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   db_data:
+  pg_data:
+  redis_data:
