@@ -28,7 +28,7 @@ services:
       retries: 3
 
   db:
-    image: mariadb:10.9
+    image: mariadb:10.11
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: dev_db
@@ -38,7 +38,7 @@ services:
       - db_data:/var/lib/mysql
 
   postgres:
-    image: postgres:14
+    image: postgres:15
     environment:
       POSTGRES_DB: dev_db
       POSTGRES_USER: root
@@ -82,7 +82,7 @@ services:
       - "8025:8025"
       
   node:
-    image: node:18-alpine
+    image: node:22-alpine
     working_dir: /app
     volumes:
       - ./nodejs/active:/app
@@ -101,7 +101,7 @@ services:
       - redis_data:/data
 
   python:
-    image: python:3.11-slim
+    image: python:3.13-slim
     working_dir: /app
     volumes:
       - ./python:/app
