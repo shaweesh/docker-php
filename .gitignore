@@ -1,0 +1,59 @@
+# -------------------------
+# Node.js
+# -------------------------
+node_modules/
+.vite/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# -------------------------
+# PHP
+# -------------------------
+vendor/
+composer.lock
+
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# -------------------------
+# SSL certificates (local, not for production)
+ssl/*.crt
+ssl/*.key
+
+# -------------------------
+# Logs and runtime
+# -------------------------
+*.log
+logs/
+*.pid
+*.seed
+
+# -------------------------
+# Docker
+# -------------------------
+*.tar
+docker-compose.override.yml
+
+# -------------------------
+# VS Code and IDEs
+# -------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# -------------------------
+# OS-generated files
+# -------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
