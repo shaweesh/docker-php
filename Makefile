@@ -8,4 +8,10 @@ logs:
 	docker-compose logs -f
 
 shell:
-	docker exec -it web bash
+	docker-compose exec web sh
+
+node-shell:
+	docker-compose exec node sh
+
+python-shell:
+	docker-compose exec python sh
