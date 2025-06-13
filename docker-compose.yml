@@ -74,10 +74,6 @@ services:
       - "8082:80"
     volumes:
       - ./html:/srv
-    environment:
-      - FB_AUTH_METHOD=basic
-      - FB_USERNAME=admin
-      - FB_PASSWORD=admin
 
   mailhog:
     image: mailhog/mailhog
