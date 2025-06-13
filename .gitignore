@@ -28,6 +28,7 @@ __pycache__/
 # SSL certificates (local, not for production)
 ssl/*.crt
 ssl/*.key
+!ssl/.gitkeep
 
 # -------------------------
 # Logs and runtime
