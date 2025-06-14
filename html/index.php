@@ -33,8 +33,101 @@ function getFileIcon($name, $isDir) {
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.5.9/dist/typography.min.css" rel="stylesheet" />
   <style>
-    .fade-in { animation: fadeInUp 0.6s ease forwards; opacity: 0; transform: translateY(20px); }
-    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: #1f2937;
+    font-weight: 700;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose p {
+    color: #374151;
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+
+  .prose a {
+    color: #3b82f6;
+    text-decoration: underline;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose blockquote {
+    padding: 1rem;
+    border-left: 4px solid #3b82f6;
+    background-color: #f3f4f6;
+    font-style: italic;
+    color: #374151;
+    margin: 1.5rem 0;
+  }
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+
+  .prose thead {
+    background-color: #f9fafb;
+    font-weight: 600;
+  }
+
+  .prose th,
+  .prose td {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .prose code {
+    background-color: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: monospace;
+  }
+
+  .prose pre {
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .prose pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .prose img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
@@ -137,7 +230,7 @@ function getFileIcon($name, $isDir) {
               ?>
               <tr class="border-t hover:bg-gray-50">
                 <td class="py-2 px-3"><?= $icon ?></td>
-                <td class="py-2 px-3"><?= htmlspecialchars($name) ?></td>
+                <td class="py-2 px-3"><a href="<?= $link ?>" target="_blank" class="text-blue-600 hover:underline"><?= htmlspecialchars($name) ?></a></td>
                 <td class="py-2 px-3"><?= $size ?></td>
                 <td class="py-2 px-3"><?= $modified ?></td>
                 <td class="py-2 px-3">
